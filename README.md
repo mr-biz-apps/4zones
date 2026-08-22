@@ -84,7 +84,9 @@ verify the download, or aren't comfortable with the above.
 
 ## Installing the beta
 
-This is a **pre-1.0 sideload beta** (`0.9.0-beta1`). It is not on Google Play
+This is a **pre-1.0 sideload beta**
+([`0.9.0-beta1`](https://github.com/mr-biz-apps/4zones/releases/tag/v0.9.0-beta1)).
+It is not on Google Play
 yet. Everything below is written to be followed with nothing but this page and
 the APK file.
 
@@ -230,9 +232,8 @@ certificate SHA-256
 `98d58b42c8f6a02c26eb34e6c42981cc2b92ea67d4680b26e884593ab471f19d`,
 23,031,442 bytes — the digests the release page must publish.
 
-**The release itself is pending publication.** Until it appears on this
-repository's Releases page, there is nothing to install. The identity above is
-what the forthcoming release will carry.
+**The release is published:** download it from
+[v0.9.0-beta1](https://github.com/mr-biz-apps/4zones/releases/tag/v0.9.0-beta1).
 
 The rows below are the known issues that stood at that gate; "Affects"
 describes behaviour expected by design, not a per-row device reproduction.
