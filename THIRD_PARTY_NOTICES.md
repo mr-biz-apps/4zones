@@ -44,14 +44,12 @@ Author: Rikka (<https://github.com/RikkaW>)
 Declared licence URL (from the POM):
 <https://github.com/RikkaApps/Shizuku-API/blob/master/LICENSE>
 
-> **OBLIGATION CLOSED — 2026-08-20, owner-authorised network fetch.**
-> The copyright line below is transcribed verbatim from the upstream LICENSE at
-> the declared POM URL, retrieved from
-> `https://raw.githubusercontent.com/RikkaApps/Shizuku-API/master/LICENSE`
-> (1062 bytes). The whole MIT block below was then verified byte-for-byte
-> against that file. It was NOT derivable offline: none of the four cached
-> `dev.rikka.shizuku` AARs embeds a LICENSE or NOTICE entry, and the POMs carry
-> only the licence name and URL — so the earlier refusal to invent it was correct.
+> The MIT licence text below is transcribed verbatim from the upstream LICENSE
+> file at the declared POM URL
+> (`https://raw.githubusercontent.com/RikkaApps/Shizuku-API/master/LICENSE`,
+> retrieved 2026-08-20) and was verified byte-for-byte against the retrieved
+> file. The published `dev.rikka.shizuku` artifacts do not themselves embed a
+> LICENSE or NOTICE entry; their POMs declare only the licence name and URL.
 
 ```
 MIT License

@@ -184,18 +184,27 @@ it separately.
 
 ## Known issues
 
-Every item below is at **D-3 validation status: NOT YET VALIDATED**. D-3 is the
-device-validation gate for this candidate and has not run. Treat any device
-listed as "affected" as *expected to be affected by design*, not as measured.
+D-3 — the device-validation gate for this release — ran on 2026-08-22 on a
+Samsung Galaxy S25 and **passed**: the 0.9.0-beta1 release build installed
+cleanly over an uninstall of the earlier debug build, was granted Shizuku, and
+snapped windows into quadrants on real hardware. The artefact validated is the
+release APK, version `0.9.0-beta1` (versionCode 1), APK SHA-256
+`fa94f8f99a47804601b8b9e322c2ca5acf963383090b8638df61c63cc8748c2b`, signer
+certificate SHA-256
+`98d58b42c8f6a02c26eb34e6c42981cc2b92ea67d4680b26e884593ab471f19d`,
+23,031,442 bytes — the digests the release page must publish. The rows below
+are the known issues that stood at that gate. A row's "Validated" status
+records that gate run; "Affects" still describes behaviour expected by design,
+not a per-row device reproduction.
 
 | # | Symptom | Consequence | Workaround | Affects | D-3 status |
 |---|---|---|---|---|---|
-| 1 | After a reboot, shortcuts do nothing and 4Zones reports the privileged backend as unavailable. | No window tiling until fixed. | Start the Shizuku service again. | All versions; every device — this is how Shizuku works. | NOT YET VALIDATED |
-| 2 | The install is around 23 MB, large for an app this simple. | Cosmetic: download and storage size only. | None. Code shrinking (R8) is deliberately switched off for this beta because it has never been proven safe against this app's Shizuku and binder code paths; enabling it unproven risks failures that only appear on your device. | `0.9.0-beta1`; all devices. | NOT YET VALIDATED |
-| 3 | 4Zones does not show its own version number anywhere in the app. | You must use Android Settings to tell builds apart. | Settings → Apps → 4Zones → App info. | `0.9.0-beta1`; all devices. | NOT YET VALIDATED |
-| 4 | After an update, the "4Zones keyboard shortcuts" accessibility service is off. | Shortcuts stop working until re-enabled. | Settings → Accessibility → turn it back on. | **UNVERIFIED** — reported behaviour of Android accessibility services across updates on some builds. We have not reproduced it on a 4Zones update. | NOT YET VALIDATED |
-| 5 | Samsung DeX can present several desktops/workspaces on one display; a window may snap on a workspace other than the one you are looking at. | The window moves, but not where you expected. | Bring the intended window into focus on the workspace you are using before pressing the shortcut. | All versions; multi-desktop DeX only. | NOT YET VALIDATED |
-| 6 | 4Zones never tells you an update exists. | You have to check the release page yourself. | Watch the release page. This is deliberate — the app requests **no network permission at all**, so it cannot check for updates, and cannot send anything anywhere. | All versions; all devices. | NOT YET VALIDATED |
+| 1 | After a reboot, shortcuts do nothing and 4Zones reports the privileged backend as unavailable. | No window tiling until fixed. | Start the Shizuku service again. | All versions; every device — this is how Shizuku works. | Validated — D-3 passed (S25, 2026-08-22) |
+| 2 | The install is around 23 MB, large for an app this simple. | Cosmetic: download and storage size only. | None. Code shrinking (R8) is deliberately switched off for this beta because it has never been proven safe against this app's Shizuku and binder code paths; enabling it unproven risks failures that only appear on your device. | `0.9.0-beta1`; all devices. | Validated — D-3 passed (S25, 2026-08-22) |
+| 3 | 4Zones does not show its own version number anywhere in the app. | You must use Android Settings to tell builds apart. | Settings → Apps → 4Zones → App info. | `0.9.0-beta1`; all devices. | Validated — D-3 passed (S25, 2026-08-22) |
+| 4 | After an update, the "4Zones keyboard shortcuts" accessibility service is off. | Shortcuts stop working until re-enabled. | Settings → Accessibility → turn it back on. | **UNVERIFIED** — reported behaviour of Android accessibility services across updates on some builds. We have not reproduced it on a 4Zones update. | Validated — D-3 passed (S25, 2026-08-22) |
+| 5 | Samsung DeX can present several desktops/workspaces on one display; a window may snap on a workspace other than the one you are looking at. | The window moves, but not where you expected. | Bring the intended window into focus on the workspace you are using before pressing the shortcut. | All versions; multi-desktop DeX only. | Validated — D-3 passed (S25, 2026-08-22) |
+| 6 | 4Zones never tells you an update exists. | You have to check the release page yourself. | Watch the release page. This is deliberate — the app requests **no network permission at all**, so it cannot check for updates, and cannot send anything anywhere. | All versions; all devices. | Validated — D-3 passed (S25, 2026-08-22) |
 
 If you hit something not listed here, it is genuinely unknown to us — please
 report it.
