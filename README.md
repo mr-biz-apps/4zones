@@ -8,7 +8,9 @@
 
 ## Release Repository Scope
 
-This repository (`mr-biz-apps/4zones`) is the **Google Play Release Repository** for the Shizuku-backed edition of 4Zones.
+This repository (`mr-biz-apps/4zones`) is the **public source and sideload-release
+repository** for the Shizuku-backed edition of 4Zones. The app is not on Google
+Play; releases are published here as directly installable APKs.
 
 > [!NOTE]
 > This repository contains the **full source of the Shizuku edition** — `app/` product code, its
@@ -108,7 +110,10 @@ certificate SHA-256**. Both are on the release page you downloaded the APK from.
 Shizuku is a separate app by a different author. 4Zones does not bundle it and
 does not install it for you.
 
-1. Install Shizuku from <https://shizuku.rikka.app/> or Google Play.
+1. Install Shizuku from <https://shizuku.rikka.app/> or its GitHub releases at
+   <https://github.com/RikkaApps/Shizuku/releases>. The Play Store listing may
+   not install on recent Android versions, so the direct download is the
+   reliable route.
 2. Start the Shizuku service using **whichever method Shizuku offers on your
    device** — its own app walks you through wireless debugging (no PC needed on
    Android 11+) or an ADB command from a computer. Follow Shizuku's instructions,
