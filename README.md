@@ -51,6 +51,37 @@ Play; releases are published here as directly installable APKs.
 
 ---
 
+## Should you install this?
+
+4Zones needs two things most apps don't: an accessibility service, and Shizuku.
+
+The accessibility service only watches for Alt+Win+1–4. It cannot read screen
+content — the app doesn't request that permission, and you can check that in
+the source.
+
+Shizuku is the part worth thinking about. It's a separate app by a different
+author holding shell-level access, and 4Zones borrows three narrow operations
+from it. That power is real and it isn't ours — you're trusting its author as
+well as us. Verify its download the way you verify ours.
+
+Starting Shizuku without a computer means enabling wireless debugging, which
+opens a service other devices on your network can reach. In May 2026 a flaw in
+that service ([CVE-2026-0073](https://nvd.nist.gov/vuln/detail/CVE-2026-0073))
+let an attacker on the same network get shell access with no prompt at all. It
+is fixed — check Settings → About phone → Android security update shows
+2026-05-01 or later — but turn wireless debugging off when you aren't using
+it, and think twice on networks you don't control.
+
+We cannot prove the published APK was built from the published source.
+Development happens in a private tree and releases are copied here. The two
+hashes prove the bytes came from our signing key; they don't prove the bytes
+came from this code.
+
+Don't install this if you don't want a shell-level helper on your phone, can't
+verify the download, or aren't comfortable with the above.
+
+---
+
 ## Installing the beta
 
 This is a **pre-1.0 sideload beta** (`0.9.0-beta1`). It is not on Google Play
@@ -197,19 +228,23 @@ release APK, version `0.9.0-beta1` (versionCode 1), APK SHA-256
 `fa94f8f99a47804601b8b9e322c2ca5acf963383090b8638df61c63cc8748c2b`, signer
 certificate SHA-256
 `98d58b42c8f6a02c26eb34e6c42981cc2b92ea67d4680b26e884593ab471f19d`,
-23,031,442 bytes — the digests the release page must publish. The rows below
-are the known issues that stood at that gate. A row's "Validated" status
-records that gate run; "Affects" still describes behaviour expected by design,
-not a per-row device reproduction.
+23,031,442 bytes — the digests the release page must publish.
 
-| # | Symptom | Consequence | Workaround | Affects | D-3 status |
-|---|---|---|---|---|---|
-| 1 | After a reboot, shortcuts do nothing and 4Zones reports the privileged backend as unavailable. | No window tiling until fixed. | Start the Shizuku service again. | All versions; every device — this is how Shizuku works. | Validated — D-3 passed (S25, 2026-08-22) |
-| 2 | The install is around 23 MB, large for an app this simple. | Cosmetic: download and storage size only. | None. Code shrinking (R8) is deliberately switched off for this beta because it has never been proven safe against this app's Shizuku and binder code paths; enabling it unproven risks failures that only appear on your device. | `0.9.0-beta1`; all devices. | Validated — D-3 passed (S25, 2026-08-22) |
-| 3 | 4Zones does not show its own version number anywhere in the app. | You must use Android Settings to tell builds apart. | Settings → Apps → 4Zones → App info. | `0.9.0-beta1`; all devices. | Validated — D-3 passed (S25, 2026-08-22) |
-| 4 | After an update, the "4Zones keyboard shortcuts" accessibility service is off. | Shortcuts stop working until re-enabled. | Settings → Accessibility → turn it back on. | **UNVERIFIED** — reported behaviour of Android accessibility services across updates on some builds. We have not reproduced it on a 4Zones update. | Validated — D-3 passed (S25, 2026-08-22) |
-| 5 | Samsung DeX can present several desktops/workspaces on one display; a window may snap on a workspace other than the one you are looking at. | The window moves, but not where you expected. | Bring the intended window into focus on the workspace you are using before pressing the shortcut. | All versions; multi-desktop DeX only. | Validated — D-3 passed (S25, 2026-08-22) |
-| 6 | 4Zones never tells you an update exists. | You have to check the release page yourself. | Watch the release page. This is deliberate — the app requests **no network permission at all**, so it cannot check for updates, and cannot send anything anywhere. | All versions; all devices. | Validated — D-3 passed (S25, 2026-08-22) |
+**The release itself is pending publication.** Until it appears on this
+repository's Releases page, there is nothing to install. The identity above is
+what the forthcoming release will carry.
+
+The rows below are the known issues that stood at that gate; "Affects"
+describes behaviour expected by design, not a per-row device reproduction.
+
+| # | Symptom | Consequence | Workaround | Affects |
+|---|---|---|---|---|
+| 1 | After a reboot, shortcuts do nothing and 4Zones reports the privileged backend as unavailable. | No window tiling until fixed. | Start the Shizuku service again. | All versions; every device — this is how Shizuku works. |
+| 2 | The install is around 23 MB, large for an app this simple. | Cosmetic: download and storage size only. | None. Code shrinking (R8) is deliberately switched off for this beta because it has never been proven safe against this app's Shizuku and binder code paths; enabling it unproven risks failures that only appear on your device. | `0.9.0-beta1`; all devices. |
+| 3 | 4Zones does not show its own version number anywhere in the app. | You must use Android Settings to tell builds apart. | Settings → Apps → 4Zones → App info. | `0.9.0-beta1`; all devices. |
+| 4 | After an update, the "4Zones keyboard shortcuts" accessibility service is off. | Shortcuts stop working until re-enabled. | Settings → Accessibility → turn it back on. | **UNVERIFIED** — reported behaviour of Android accessibility services across updates on some builds. We have not reproduced it on a 4Zones update. |
+| 5 | Samsung DeX can present several desktops/workspaces on one display; a window may snap on a workspace other than the one you are looking at. | The window moves, but not where you expected. | Bring the intended window into focus on the workspace you are using before pressing the shortcut. | All versions; multi-desktop DeX only. |
+| 6 | 4Zones never tells you an update exists. | You have to check the release page yourself. | Watch the release page. This is deliberate — the app requests **no network permission at all**, so it cannot check for updates, and cannot send anything anywhere. | All versions; all devices. |
 
 If you hit something not listed here, it is genuinely unknown to us — please
 report it.
@@ -245,8 +280,9 @@ release APK emits none of them. We verify this at the dex level against a debug
 build as a positive control. Note the narrower true claim — the call sites are
 gone, but because release optimisation is deliberately disabled for this beta,
 some unused formatter text still sits in the APK as dead code that nothing can
-reach. The single authoritative privacy policy is the hosted page, whose source
-is [`play/site/index.html`](play/site/index.html).
+reach. The single authoritative privacy policy text lives in this repository at
+[`play/site/index.html`](play/site/index.html); that file is what is served as
+the hosted policy page.
 
 ---
 

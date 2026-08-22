@@ -12,10 +12,12 @@
          shortService needs no type-specific FGS permission. -->
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
-    <!-- Backups and Android device-to-device migration of DexZones app data
-         are intentionally excluded: settings will contain device-specific
-         layouts and privileged-service configuration that must not be
-         restored onto a different device. allowBackup="false" is backed by
+    <!-- Backups and Android device-to-device migration of this app's data
+         are intentionally excluded. The app's entire persisted state is one
+         setting: the timestamp at which the user accepted the accessibility
+         disclosure (AccessibilityDisclosureConsentStore). That consent record
+         belongs to the install it was given on and is deliberately not
+         carried to any other device. allowBackup="false" is backed by
          explicit exclude-all dataExtractionRules because manufacturers may
          ignore allowBackup for D2D transfer on Android 12+. -->
     <application
