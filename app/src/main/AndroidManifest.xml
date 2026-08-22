@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Package visibility (Android 11+): lets the app check whether the
+         Shizuku manager is installed, to distinguish "not installed" from
+         "installed but not running" in backend diagnostics. -->
+    <queries>
+        <package android:name="moe.shizuku.privileged.api" />
+    </queries>
+
+    <!-- Required for the one-shot shortService diagnostic capture only.
+         shortService needs no type-specific FGS permission. -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+
+    <!-- Backups and Android device-to-device migration of DexZones app data
+         are intentionally excluded: settings will contain device-specific
+         layouts and privileged-service configuration that must not be
+         restored onto a different device. allowBackup="false" is backed by
+         explicit exclude-all dataExtractionRules because manufacturers may
+         ignore allowBackup for D2D transfer on Android 12+. -->
+    <application
+        android:allowBackup="false"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.DexZones">
+        <activity
+            android:name=".MainActivity"
+            android:exported="true"
+            android:label="@string/app_name"
+            android:theme="@style/Theme.DexZones"
+            android:windowSoftInputMode="adjustResize">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <!-- One-shot diagnostic target capture: promotes itself to a
+             shortService foreground service, performs a single delayed
+             topology read, publishes the sanitized result, and stops. -->
+        <service
+            android:name=".capture.TargetCaptureService"
+            android:exported="false"
+            android:foregroundServiceType="shortService" />
+
+        <!-- Global keyboard-shortcut reception AND action. Standard
+             accessibility-service contract: system-only binding via
+             BIND_ACCESSIBILITY_SERVICE; the metadata requests ONLY hardware
+             key-event filtering (no window-content retrieval). It observes
+             Alt+Win+1..4 and, for a matched chord, CONSUMES that digit stream
+             and submits one snap, which ends in a privileged task resize.
+             Every other key passes straight through. -->
+        <service
+            android:name=".shortcut.QuadrantShortcutAccessibilityService"
+            android:exported="true"
+            android:label="@string/shortcut_service_label"
+            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
+            <intent-filter>
+                <action android:name="android.accessibilityservice.AccessibilityService" />
+            </intent-filter>
+            <meta-data
+                android:name="android.accessibilityservice"
+                android:resource="@xml/quadrant_shortcut_accessibility_config" />
+        </service>
+
+        <!-- Receives the Shizuku binder from the Shizuku manager app.
+             Declaration follows upstream Shizuku guidance. -->
+        <provider
+            android:name="rikka.shizuku.ShizukuProvider"
+            android:authorities="${applicationId}.shizuku"
+            android:enabled="true"
+            android:exported="true"
+            android:multiprocess="false"
+            android:permission="android.permission.INTERACT_ACROSS_USERS_FULL" />
+    </application>
+
+</manifest>

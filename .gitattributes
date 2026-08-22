@@ -1,0 +1,20 @@
+# Line-ending normalisation.
+#
+# Without this file a Windows clone under core.autocrlf=true rewrites gradlew
+# with CRLF endings, which breaks it under git-bash and WSL. That fails for a
+# consumer, silently, and no Linux-side check catches it.
+
+* text=auto eol=lf
+
+# The Gradle wrapper script MUST be LF.
+gradlew        text eol=lf
+
+# Windows launcher keeps CRLF.
+*.bat          text eol=crlf
+
+# Binary assets — never normalise.
+*.jar          binary
+*.webp         binary
+*.png          binary
+*.keystore     binary
+*.jks          binary

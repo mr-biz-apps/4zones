@@ -1,0 +1,134 @@
+# 4Zones — public CI (D-4 condition PUBLIC-CI).
+#
+# WHY THIS FILE EXISTS, AND WHY IT IS HERE RATHER THAN IN `app/`.
+#
+# This repository is periodically RE-SEEDED from an upstream tree: `app/` and the
+# Gradle scripts are overwritten wholesale (see CONTRIBUTING.md). The application
+# identity assertion lives in `app/build.gradle.kts`, which means a re-seed can
+# delete the constant AND the assertion together — after which the build goes
+# green because nothing is checking any more.
+#
+# A guard inside the blast radius of the thing it guards is not a guard. So this
+# workflow sits OUTSIDE the re-seeded set and asserts, on every push:
+#
+#   1. the frozen application identity constant is present and correct; and
+#   2. the verification tasks that assert it against the BUILT APK still exist.
+#
+# Neither substitutes for the other. (1) without (2) passes a build with no
+# assertion left; (2) without (1) passes a build that asserts the wrong identity.
+#
+# `applicationId` can never be changed after publication without orphaning every
+# install, so a silent revert is unrecoverable. That is the failure this catches.
+#
+# It needs NO secrets and NO signing material, which is precisely why it is safe
+# on a public repository. `unsignedProof` is a deliberately, distinctly named
+# build type whose output cannot be mistaken for the released app.
+
+name: ci
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    env:
+      # The single frozen value this workflow exists to protect. Kept here as the
+      # workflow's own copy ON PURPOSE: if it were read out of the file under
+      # suspicion, a re-seed that changed the identity would change both sides and
+      # the assertion would be tautological.
+      FROZEN_APPLICATION_ID: uk.mr_biz.fourzones
+
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v4
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '25'
+          cache: gradle
+
+      - name: Assert the frozen application identity constant (guard 1 of 2)
+        run: |
+          set -euo pipefail
+          script="app/build.gradle.kts"
+          if [ ! -f "$script" ]; then
+            echo "FROZEN IDENTITY NOT ASSERTED — $script is missing." >&2
+            exit 1
+          fi
+          if ! grep -qE "^val frozenApplicationId[[:space:]]*=[[:space:]]*\"${FROZEN_APPLICATION_ID//./\\.}\"$" "$script"; then
+            {
+              echo "FROZEN APPLICATION IDENTITY MISSING OR CHANGED — failing the build."
+              echo
+              echo "  expected line: val frozenApplicationId = \"${FROZEN_APPLICATION_ID}\""
+              echo "  in:            $script"
+              echo
+              echo "What was found instead:"
+              grep -n "frozenApplicationId" "$script" || echo "  (no occurrence of frozenApplicationId at all)"
+              echo
+              echo "applicationId can NEVER be changed after publication without orphaning every"
+              echo "install. This repository is re-seeded from upstream and that mechanism has"
+              echo "reverted the identity once already, silently. If the identity legitimately"
+              echo "changed, change it deliberately, once, and before publication."
+            } >&2
+            exit 1
+          fi
+          echo "OK: $script declares frozenApplicationId = \"${FROZEN_APPLICATION_ID}\"."
+
+      - name: Assert the identity verification tasks still exist (guard 2 of 2)
+        run: |
+          set -euo pipefail
+          chmod +x ./gradlew
+          ./gradlew --no-daemon -q :app:tasks --all > gradle-task-list.txt
+          missing=0
+          for task in verifyApplicationIdentity verifyUnsignedProofApplicationId verifyReleaseApplicationId; do
+            if grep -qE "^${task}([[:space:]]|\$)" gradle-task-list.txt; then
+              echo "OK: :app:${task} exists."
+            else
+              echo "MISSING: :app:${task}" >&2
+              missing=1
+            fi
+          done
+          if [ "$missing" -ne 0 ]; then
+            {
+              echo
+              echo "APPLICATION IDENTITY VERIFICATION TASK DELETED — failing the build."
+              echo
+              echo "The frozen constant being present is NOT enough: a re-seed that keeps the"
+              echo "constant as dead text while dropping the verification task would ship"
+              echo "unguarded. These tasks are what read the identity back out of the BUILT APK"
+              echo "with aapt2 and fail the build on mismatch. Reporting a value is not"
+              echo "asserting it."
+            } >&2
+            exit 1
+          fi
+
+      - name: Completeness build — assemble, unit tests, instrumentation compile
+        run: |
+          set -euo pipefail
+          ./gradlew --no-daemon assembleUnsignedProof test assembleAndroidTest
+
+      - name: Assert the built artifact declares the frozen identity
+        run: |
+          set -euo pipefail
+          # Belt and braces: :app:assembleUnsignedProof already depends on this
+          # task, so the step above cannot have passed without it running. Invoking
+          # it by name as well means a broken dependency wiring fails HERE rather
+          # than passing silently.
+          ./gradlew --no-daemon :app:verifyUnsignedProofApplicationId
+
+      - name: Upload the task list on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: gradle-task-list
+          path: gradle-task-list.txt
+          if-no-files-found: ignore

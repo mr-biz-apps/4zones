@@ -1,0 +1,22 @@
+<resources>
+    <string name="app_name">4Zones</string>
+    <string name="shortcut_service_label">4Zones keyboard shortcuts</string>
+    <string name="shortcut_service_description">4Zones listens for the Alt + Windows + 1–4 keyboard shortcuts and uses them to position the focused Samsung DeX window in one of four screen zones, so other apps do not also act on those shortcuts. It does not read screen content and does not record your typing.</string>
+
+    <!-- Phase 4D: accessibility prominent-disclosure + consent. Do NOT reword without re-audit.
+         REBIND-1 (2026-08-20): the snap chord moved Ctrl+Win+1–4 → Alt+Win+1–4. The ONLY edit to the
+         body below is the two chord names; every other claim was re-read against the service and is
+         unchanged. -->
+    <string name="accessibility_disclosure_title">Turn on keyboard shortcuts</string>
+    <string name="accessibility_disclosure_body">4Zones uses an Android accessibility service for one thing: to detect the keyboard shortcuts that snap windows into zones (Alt + Win + 1–4 on a connected keyboard).\n\nWhat it does\n• Watches for the 4Zones shortcut keys so it can snap the current window.\n\nWhat it does not do\n• It does not read the content of your screen or any app.\n• It only reacts to its window-tiling shortcuts (Alt + Win + 1–4). Other keys pass straight through to the app you\'re using — 4Zones does not record, store, or send that text. (A matched shortcut may be logged on your device for diagnostics only; it never leaves your device.)\n• It does not collect, store, or share any personal or sensitive information.\n• Everything happens on your device.\n\nOn the next screen, Android will ask you to turn on “4Zones keyboard shortcuts.” You can turn it off at any time in Settings → Accessibility.</string>
+    <string name="accessibility_disclosure_accept">Turn on shortcuts</string>
+    <string name="accessibility_disclosure_decline">Not now</string>
+    <!-- D-1-CORR (H7d): the deep-link to system Accessibility settings can fail (no Activity handles
+         ACTION_ACCESSIBILITY_SETTINGS, or the launch is denied). Consent stays granted and the app must
+         not crash — it shows this recovery message instead. The copy deliberately does NOT repeat the
+         disclosure’s "On the next screen, Android will ask you…" promise, which is false in exactly this
+         case; it supplies the manual route instead. It makes no data/privacy claim of its own. -->
+    <string name="accessibility_settings_unavailable_title">Could not open Accessibility settings</string>
+    <string name="accessibility_settings_unavailable_body">4Zones could not open the Accessibility settings screen on this device.\n\nTo turn on keyboard shortcuts, open Settings → Accessibility yourself and turn on “4Zones keyboard shortcuts.”\n\nYou can also try again from 4Zones at any time.</string>
+    <string name="accessibility_settings_unavailable_dismiss">OK</string>
+</resources>

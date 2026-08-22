@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Minimal accessibility-service metadata for shortcut RECEPTION.
+
+  Requests ONLY the hardware-key-filter capability:
+    - canRequestFilterKeyEvents=true  + flagRequestFilterKeyEvents
+      so the user can grant key filtering and onKeyEvent is delivered.
+
+  Deliberately NOT requested (not needed to observe key chords):
+    - canRetrieveWindowContent  (no window-content retrieval; not a keylogger)
+    - accessibilityEventTypes    (no accessibility events consumed)
+    - gestures / touch exploration / accessibility button / fingerprint, etc.
+-->
+<accessibility-service xmlns:android="http://schemas.android.com/apk/res/android"
+    android:accessibilityFeedbackType="feedbackGeneric"
+    android:accessibilityFlags="flagRequestFilterKeyEvents"
+    android:canRequestFilterKeyEvents="true"
+    android:description="@string/shortcut_service_description"
+    android:isAccessibilityTool="false"
+    android:notificationTimeout="0" />

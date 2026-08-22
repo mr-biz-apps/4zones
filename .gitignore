@@ -1,0 +1,40 @@
+*.iml
+.gradle
+/local.properties
+/.idea/caches
+/.idea/libraries
+/.idea/modules.xml
+/.idea/workspace.xml
+/.idea/navEditor.xml
+/.idea/assetWizardSettings.xml
+.DS_Store
+/build
+/captures
+.externalNativeBuild
+.cxx
+local.properties
+.gworkspace-mcp/
+
+# ─── D-2 H2: release signing / publishing credentials ───────────────────────
+# Additive deny rules. A signing key committed to this repository — which is
+# intended to become public — is a total, unrecoverable compromise: the key
+# cannot be rotated without forcing every user to uninstall and lose settings.
+# These rules cover the ORDINARY add path only. They do NOT stop `git add -f`
+# and they do NOT affect anything already tracked.
+*.jks
+*.keystore
+*.p12
+*.pfx
+*.pem
+*.der
+*.key
+*.pk8
+*.kdbx
+keystore/
+signing.properties
+keystore.properties
+release-signing.properties
+# Google Play publishing service-account keys — never commit.
+play-service-account.json
+play-store-credentials.json
+*service-account*.json

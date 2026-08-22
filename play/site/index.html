@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Privacy Policy - 4Zones (Shizuku Edition)</title>
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --accent: #38bdf8;
+            --border: #334155;
+        }
+        @media (prefers-color-scheme: light) {
+            :root {
+                --bg-color: #f8fafc;
+                --card-bg: #ffffff;
+                --text-main: #0f172a;
+                --text-muted: #475569;
+                --accent: #0284c7;
+                --border: #e2e8f0;
+            }
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            margin: 0;
+            padding: 24px 16px;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 32px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            font-size: 1.85rem;
+            margin-top: 0;
+            color: var(--text-main);
+            border-bottom: 2px solid var(--border);
+            padding-bottom: 12px;
+        }
+        h2 {
+            font-size: 1.35rem;
+            margin-top: 28px;
+            color: var(--accent);
+        }
+        p, li {
+            font-size: 1rem;
+            color: var(--text-main);
+        }
+        ul {
+            padding-left: 24px;
+        }
+        li {
+            margin-bottom: 8px;
+        }
+        .meta {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-bottom: 24px;
+        }
+        .card {
+            background-color: rgba(56, 189, 248, 0.05);
+            border-left: 4px solid var(--accent);
+            padding: 16px;
+            border-radius: 4px;
+            margin: 20px 0;
+        }
+        footer {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border);
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Privacy Policy</h1>
+        <div class="meta">
+            <strong>App:</strong> 4Zones (Shizuku Edition) &bull;
+            <strong>Effective Date:</strong> August 21, 2026
+        </div>
+
+        <p>This page is the single authoritative 4Zones privacy policy. It explains how 4Zones handles information when you install and use the app.</p>
+
+        <h2>1. Nothing is transmitted</h2>
+        <p>4Zones holds no network permission, so it has no channel to send anything off your device, and there is no 4Zones server for anything to be sent to. You can check this in the app's manifest, which declares no network permission of any kind.</p>
+
+        <h2>2. One setting is saved</h2>
+        <p>4Zones saves one setting: the time you accepted the in-app accessibility disclosure, kept in the app's own private preferences.</p>
+
+        <h2>3. Everything else stays in memory</h2>
+        <p>Everything else 4Zones keeps while it is running is held in memory and discarded when the app's process ends. It can include window details such as app package names, display and task identifiers, and timestamps.</p>
+
+        <h2>4. Components</h2>
+        <p>4Zones performs privileged window operations through <a href="https://shizuku.rikka.app/" style="color: var(--accent);">Shizuku</a>, a separate app you install yourself, over local inter-process communication on your device. Every third-party component packaged into the released app is listed, with its licence, in the <code>THIRD_PARTY_NOTICES.md</code> file at the root of the 4Zones source repository.</p>
+
+        <h2>5. Contact &amp; Support</h2>
+        <p>If you have any questions regarding this Privacy Policy or 4Zones, please contact the developer at:</p>
+        <p><strong>Support Email:</strong> <code>support@mr-biz.uk</code></p>
+
+        <footer>
+            &copy; 2026 4Zones Project. Source released under the Apache License 2.0.
+        </footer>
+    </div>
+</body>
+</html>
