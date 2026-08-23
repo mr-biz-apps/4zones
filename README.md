@@ -1,8 +1,8 @@
 # 4Zones
 
-**Shizuku-backed build.** Restore reliable, keyboard-driven four-zone window tiling to Samsung DeX and Android desktop mode.
+**Shizuku-backed build.** Restore reliable four-zone window tiling to Samsung DeX and Android desktop mode.
 
-4Zones snaps your active window cleanly into one of four screen quadrants using fixed global keyboard shortcuts (`Alt` + `Win` + `1`–`4`). There are no half-screen layouts and the shortcuts are not customisable. Privileged window operations are performed through [Shizuku](https://shizuku.rikka.app/), which 4Zones uses as its privilege backend — no root required.
+4Zones snaps your active window cleanly into one of four screen quadrants. Tap a zone in the app and the window you are using moves into it. If you also want a keyboard route, an optional accessibility service adds fixed global shortcuts (`Alt` + `Win` + `1`–`4`) that do the same thing without opening the app. There are no half-screen layouts and the shortcuts are not customisable. Privileged window operations are performed through [Shizuku](https://shizuku.rikka.app/), which 4Zones uses as its privilege backend — no root required.
 
 ---
 
@@ -26,7 +26,7 @@ Play; releases are published here as directly installable APKs.
 
 - **Environment**: Samsung DeX or compatible Android desktop mode
 - **Privilege Backend**: [Shizuku](https://shizuku.rikka.app/) installed and running
-- **Permissions**: `AccessibilityService` enabled to receive global keyboard shortcuts (`flagRequestFilterKeyEvents`)
+- **Permissions**: **optional** — the `AccessibilityService` (`flagRequestFilterKeyEvents`) is enabled only if you want the global keyboard shortcuts. Tapping a zone needs no accessibility service.
 
 ---
 
@@ -53,11 +53,15 @@ Play; releases are published here as directly installable APKs.
 
 ## Should you install this?
 
-4Zones needs two things most apps don't: an accessibility service, and Shizuku.
+4Zones needs one thing most apps don't: Shizuku.
 
-The accessibility service only watches for Alt+Win+1–4. It cannot read screen
-content — the app doesn't request that permission, and you can check that in
-the source.
+An accessibility service is the second thing you may have heard it needs. It is
+optional, and only buys you the keyboard shortcuts — with it switched off, 4Zones
+still tiles windows when you tap a zone. If you do enable it, it only watches for
+Alt+Win+1–4. It cannot read screen content — the app doesn't request that
+permission, and you can check that in the source. There is a concrete reason you
+might leave it off: see [Banking and anti-fraud apps](#banking-and-anti-fraud-apps)
+below.
 
 Shizuku is the part worth thinking about. It's a separate app by a different
 author holding shell-level access, and 4Zones borrows three narrow operations
@@ -80,12 +84,38 @@ came from this code.
 Don't install this if you don't want a shell-level helper on your phone, can't
 verify the download, or aren't comfortable with the above.
 
+### Banking and anti-fraud apps
+
+Some banking apps check for apps installed outside the official app stores.
+4Zones is one, and it can also run an accessibility service to receive the
+`Alt` + `Win` + `1`–`4` shortcuts.
+
+**Confirmed: HSBC UK Mobile Banking.** With 4Zones installed and its
+accessibility service enabled, HSBC named 4Zones and suspended banking on that
+device. This is HSBC's anti-fraud policy, not a 4Zones fault, and other banks run
+similar checks.
+
+**On the device we tested, both conditions had to be true.** Switching the 4Zones
+accessibility service off removed 4Zones from HSBC's list within about two
+minutes, with 4Zones still installed. Shizuku was never listed, because it runs no
+accessibility service. Developer options and wireless debugging were switched on
+throughout and were not named.
+
+**To use both:** switch off **Settings → Accessibility → "4Zones keyboard
+shortcuts"** before banking, and back on afterwards. The keyboard shortcuts stop
+working while it is off — tapping a zone in the app does not, so 4Zones keeps
+tiling windows either way. If you never enable the service, the question does not
+arise.
+
+This is one device and one bank. Banks change these checks without notice, so
+treat it as what we saw, not as a guarantee.
+
 ---
 
 ## Installing the beta
 
 This is a **pre-1.0 sideload beta**
-([`0.9.0-beta1`](https://github.com/mr-biz-apps/4zones/releases/tag/v0.9.0-beta1)).
+([`0.9.1-beta`](https://github.com/mr-biz-apps/4zones/releases/tag/v0.9.1-beta)).
 It is not on Google Play
 yet. Everything below is written to be followed with nothing but this page and
 the APK file.
@@ -99,9 +129,9 @@ certificate SHA-256**. Both are on the release page you downloaded the APK from.
 1. **Check the file is the file we published.** On the machine you downloaded to:
 
    ```bash
-   sha256sum 4zones-0.9.0-beta1.apk        # Linux
-   shasum -a 256 4zones-0.9.0-beta1.apk    # macOS
-   certutil -hashfile 4zones-0.9.0-beta1.apk SHA256   # Windows
+   sha256sum 4zones-0.9.1-beta.apk        # Linux
+   shasum -a 256 4zones-0.9.1-beta.apk    # macOS
+   certutil -hashfile 4zones-0.9.1-beta.apk SHA256   # Windows
    ```
 
    Compare the result to the published **APK SHA-256**. If it differs by even one
@@ -111,7 +141,7 @@ certificate SHA-256**. Both are on the release page you downloaded the APK from.
    it does not tell you who made them. If you have Android's `apksigner`:
 
    ```bash
-   apksigner verify --verbose --print-certs 4zones-0.9.0-beta1.apk
+   apksigner verify --verbose --print-certs 4zones-0.9.1-beta.apk
    ```
 
    Compare the printed certificate SHA-256 to the published **signer certificate
@@ -126,10 +156,16 @@ certificate SHA-256**. Both are on the release page you downloaded the APK from.
 | # | Requirement | Notes |
 |---|---|---|
 | 1 | Samsung DeX, or another Android desktop mode | Window tiling only makes sense in a desktop environment. |
-| 2 | A physical keyboard | The whole interface is `Alt` + `Win` + `1`–`4`. |
+| 2 | A physical keyboard — **only if you want the shortcuts** | Tapping a zone in the app is the whole interface. `Alt` + `Win` + `1`–`4` is an optional accelerator, and that is what needs a keyboard. |
 | 3 | Android 12 (API 31) or newer | The app will not install below this. |
 | 4 | [Shizuku](https://shizuku.rikka.app/) installed **and running** | 4Zones performs its privileged window operations through Shizuku. Without it, the app installs and opens but cannot move windows. |
-| 5 | "4Zones keyboard shortcuts" accessibility service enabled | Android delivers global keyboard shortcuts only to an accessibility service. 4Zones explains this and asks first. |
+
+**Optional, and not a prerequisite: the "4Zones keyboard shortcuts" accessibility
+service.** Android delivers global keyboard shortcuts only to an accessibility
+service, so enable it if you want `Alt` + `Win` + `1`–`4`; 4Zones explains this
+and asks first. Everything the app does is available by tapping a zone without it,
+and [Banking and anti-fraud apps](#banking-and-anti-fraud-apps) is one reason you
+might choose to leave it off.
 
 ### Install
 
@@ -157,7 +193,11 @@ does not install it for you.
 4. Open 4Zones and grant it Shizuku permission when Shizuku asks. If you miss
    the prompt, it can be granted from Shizuku's own app.
 
-### Enable the keyboard shortcuts (prerequisite 5)
+### Optional: keyboard shortcuts
+
+Skip this if you are happy tapping a zone — nothing below is required for 4Zones
+to tile windows. Do it if you want `Alt` + `Win` + `1`–`4` to work from any app,
+without opening 4Zones first.
 
 1. Open 4Zones.
 2. It explains what the accessibility service is used for and asks you to turn it
@@ -170,13 +210,17 @@ You can turn it off again at any time in **Settings → Accessibility**.
 
 ### Check it works
 
-With a window focused in DeX, press `Alt` + `Win` + `1`. The focused window
-should move to a screen zone. Try `2`, `3` and `4` for the others.
+Open 4Zones in DeX and tap **Zone 1**. Bring the window you want to move to the
+front if it isn't already — a few seconds later it should move into the top-left
+zone. Try zones 2, 3 and 4 for the others.
+
+If you enabled the keyboard shortcuts, `Alt` + `Win` + `1` does the same thing
+immediately, from any app.
 
 ### Which version am I running?
 
 **Settings → Apps → 4Zones → App info** shows the version name, e.g.
-`0.9.0-beta1`. From a computer with ADB:
+`0.9.1-beta`. From a computer with ADB:
 
 ```bash
 adb shell dumpsys package uk.mr_biz.fourzones | grep versionName
@@ -190,8 +234,9 @@ known gap, not a defect in your install.)*
 1. Verify the new APK's two hashes, exactly as for a first install.
 2. Install it **over** the existing app — do not uninstall first. Android
    replaces the app in place and **your settings are preserved**.
-3. Re-check prerequisites 4 and 5: Shizuku needs to be running, and on some
-   devices Android turns an accessibility service off across an update.
+3. Re-check prerequisite 4: Shizuku needs to be running. If you use the keyboard
+   shortcuts, check those too — on some devices Android turns an accessibility
+   service off across an update.
 
 Android will only replace the app in place if the new APK is signed by the same
 key and has a **higher** version number than the one installed. That is exactly
@@ -222,18 +267,21 @@ it separately.
 
 ## Known issues
 
-D-3 — the device-validation gate for this release — ran on 2026-08-22 on a
-Samsung Galaxy S25 and **passed**: the 0.9.0-beta1 release build installed
-cleanly over an uninstall of the earlier debug build, was granted Shizuku, and
-snapped windows into quadrants on real hardware. The artefact validated is the
-release APK, version `0.9.0-beta1` (versionCode 1), APK SHA-256
-`fa94f8f99a47804601b8b9e322c2ca5acf963383090b8638df61c63cc8748c2b`, signer
+The device-validation gate for this release ran on 2026-08-23 on a Samsung
+Galaxy S25 and **passed**. With the accessibility service switched **off**, all
+four zones snapped the intended window on real hardware. With Shizuku's
+permission revoked the zones were disabled and said why; granting it re-enabled
+them without restarting the app. The artefact validated is the release APK,
+version `0.9.1-beta` (versionCode 2), APK SHA-256
+`23fe91aac33102330972ad012f631bee2d0481de69c6463a4b01383de5540111`, signer
 certificate SHA-256
 `98d58b42c8f6a02c26eb34e6c42981cc2b92ea67d4680b26e884593ab471f19d`,
-23,031,442 bytes — the digests the release page must publish.
+23,047,826 bytes — the digests the release page must publish. The signing
+certificate is unchanged from `0.9.0-beta1`, so this installs as an in-place
+upgrade.
 
 **The release is published:** download it from
-[v0.9.0-beta1](https://github.com/mr-biz-apps/4zones/releases/tag/v0.9.0-beta1).
+[v0.9.1-beta](https://github.com/mr-biz-apps/4zones/releases/tag/v0.9.1-beta).
 
 The rows below are the known issues that stood at that gate; "Affects"
 describes behaviour expected by design, not a per-row device reproduction.
@@ -241,10 +289,10 @@ describes behaviour expected by design, not a per-row device reproduction.
 | # | Symptom | Consequence | Workaround | Affects |
 |---|---|---|---|---|
 | 1 | After a reboot, shortcuts do nothing and 4Zones reports the privileged backend as unavailable. | No window tiling until fixed. | Start the Shizuku service again. | All versions; every device — this is how Shizuku works. |
-| 2 | The install is around 23 MB, large for an app this simple. | Cosmetic: download and storage size only. | None. Code shrinking (R8) is deliberately switched off for this beta because it has never been proven safe against this app's Shizuku and binder code paths; enabling it unproven risks failures that only appear on your device. | `0.9.0-beta1`; all devices. |
-| 3 | 4Zones does not show its own version number anywhere in the app. | You must use Android Settings to tell builds apart. | Settings → Apps → 4Zones → App info. | `0.9.0-beta1`; all devices. |
-| 4 | After an update, the "4Zones keyboard shortcuts" accessibility service is off. | Shortcuts stop working until re-enabled. | Settings → Accessibility → turn it back on. | **UNVERIFIED** — reported behaviour of Android accessibility services across updates on some builds. We have not reproduced it on a 4Zones update. |
-| 5 | Samsung DeX can present several desktops/workspaces on one display; a window may snap on a workspace other than the one you are looking at. | The window moves, but not where you expected. | Bring the intended window into focus on the workspace you are using before pressing the shortcut. | All versions; multi-desktop DeX only. |
+| 2 | The install is around 23 MB, large for an app this simple. | Cosmetic: download and storage size only. | None. Code shrinking (R8) is deliberately switched off for this beta because it has never been proven safe against this app's Shizuku and binder code paths; enabling it unproven risks failures that only appear on your device. | `0.9.1-beta`; all devices. |
+| 3 | 4Zones does not show its own version number anywhere in the app. | You must use Android Settings to tell builds apart. | Settings → Apps → 4Zones → App info. | `0.9.1-beta`; all devices. |
+| 4 | After an update, the "4Zones keyboard shortcuts" accessibility service is off. | The keyboard shortcuts stop working until it is re-enabled. Tapping a zone in the app is unaffected. | Settings → Accessibility → turn it back on. | **UNVERIFIED** — reported behaviour of Android accessibility services across updates on some builds. We have not reproduced it on a 4Zones update. |
+| 5 | Samsung DeX can present several desktops/workspaces on one display; a window may snap on a workspace other than the one you are looking at. | The window moves, but not where you expected. | Bring the intended window into focus on the workspace you are using before tapping a zone or pressing the shortcut. | All versions; multi-desktop DeX only. |
 | 6 | 4Zones never tells you an update exists. | You have to check the release page yourself. | Watch the release page. This is deliberate — the app requests **no network permission at all**, so it cannot check for updates, and cannot send anything anywhere. | All versions; all devices. |
 
 If you hit something not listed here, it is genuinely unknown to us — please
@@ -272,7 +320,13 @@ a security or privacy problem privately.
 ## Privacy posture, in one paragraph
 
 4Zones requests **no network permission of any kind**. It cannot reach the
-internet, so nothing it observes can leave your device. Its app data is excluded
+internet, so nothing it observes can leave your device. Check that against the
+file you downloaded rather than taking our word for it: `aapt2 dump permissions`
+on the signed release APK lists exactly three permissions —
+`android.permission.FOREGROUND_SERVICE`,
+`uk.mr_biz.fourzones.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION` (contributed by
+AndroidX and scoped to this app alone) and
+`moe.shizuku.manager.permission.API_V23` — and no `android.permission.INTERNET`. Its app data is excluded
 from Android cloud backup and from device-to-device transfer. The accessibility
 service is used only to detect its own `Alt` + `Win` + `1`–`4` shortcuts; it
 does not read screen content. The diagnostic logging *calls* that could name

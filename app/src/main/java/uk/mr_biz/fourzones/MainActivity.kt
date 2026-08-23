@@ -38,6 +38,9 @@ import uk.mr_biz.fourzones.privileged.PrivilegedBackendStatus
 import uk.mr_biz.fourzones.privileged.ShizukuPrivilegedBackend
 import uk.mr_biz.fourzones.privileged.TopologyReadResult
 import uk.mr_biz.fourzones.product.productReadiness
+import uk.mr_biz.fourzones.product.snapControlsEnabled
+import uk.mr_biz.fourzones.product.snapDisabledReason
+import uk.mr_biz.fourzones.product.snapFeedbackLine
 import uk.mr_biz.fourzones.shortcut.AccessibilityDisclosureConsentStore
 import uk.mr_biz.fourzones.shortcut.AccessibilityEnableGate
 import uk.mr_biz.fourzones.shortcut.AccessibilitySettingsLaunchResult
@@ -193,6 +196,16 @@ class MainActivity : ComponentActivity() {
                             // observes the app-wide grant independently.
                             onRequestPermission = { privilegedBackend.requestPermission() },
                             onOpenDiagnostics = { screen = AppScreen.DIAGNOSTICS },
+                            // Tap-to-snap. Gated on THIS Activity's own backend
+                            // status — the same signal the diagnostics snap card
+                            // already runs on, and independent of the
+                            // accessibility service, which tapping does not need.
+                            snapEnabled = snapControlsEnabled(topologyBackendStatus),
+                            snapDisabledReason = snapDisabledReason(topologyBackendStatus),
+                            snapFeedback = snapFeedbackLine(snapExecutionState),
+                            onRequestSnap = { quadrant ->
+                                snapExecutionController.requestSnap(quadrant)
+                            },
                             modifier = Modifier.padding(innerPadding),
                         )
                         AppScreen.DIAGNOSTICS -> {

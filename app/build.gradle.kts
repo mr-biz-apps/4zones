@@ -172,10 +172,10 @@ android {
         targetSdk = 37
         // D-2: versionCode is MONOTONIC across every published artifact —
         // Android refuses to install a lower versionCode over a higher one.
-        versionCode = 1
+        versionCode = 2
         // D-2: pre-1.0 and beta-honest. This is a Shizuku-backed sideload beta,
         // not a 1.0 product.
-        versionName = "0.9.0-beta1"
+        versionName = "0.9.1-beta"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
